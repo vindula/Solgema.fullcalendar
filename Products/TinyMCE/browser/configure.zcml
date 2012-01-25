@@ -1,0 +1,87 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="tinymce">
+
+    <browser:page
+        for="..interfaces.utility.ITinyMCE"
+        name="tinymce-controlpanel"
+        class=".controlpanel.TinyMCEControlPanelForm"
+        permission="plone.app.controlpanel.TinyMCE"
+        />
+
+    <browser:page
+        for="..interfaces.utility.ITinyMCE"
+        name="tinymce-getstyle"
+        class=".style.TinyMCEStyle"
+        attribute="getStyle"
+        permission="zope2.View"
+        />
+
+    <browser:page
+        for="..interfaces.utility.ITinyMCE"
+        name="tinymce-getpathbyuid"
+        class=".url.TinyMCEUrl"
+        attribute="getPathByUID"
+        permission="zope2.View"
+        />
+
+    <browser:page
+        for="*"
+        name="checkDocument"
+        class=".browser.ATDProxyView"
+        permission="zope2.View"
+        attribute="checkDocument"
+        />
+
+
+    <browser:pages
+        for="*"
+        class=".browser.TinyMCEBrowserView"
+        permission="zope2.View">
+        <browser:page attribute="jsonLinkableFolderListing" name="tinymce-jsonlinkablefolderlisting" />
+        <browser:page attribute="jsonImageFolderListing" name="tinymce-jsonimagefolderlisting" />
+        <browser:page attribute="jsonLinkableSearch" name="tinymce-jsonlinkablesearch" />
+        <browser:page attribute="jsonImageSearch" name="tinymce-jsonimagesearch" />
+        <browser:page attribute="jsonDetails" name="tinymce-jsondetails" />
+        <browser:page attribute="jsonConfiguration" name="tinymce-jsonconfiguration" />
+    </browser:pages>
+
+    <browser:pages
+        for="*"
+        class=".browser.TinyMCEBrowserView"
+        permission="cmf.ModifyPortalContent">
+        <browser:page attribute="save" name="tinymce-save" />
+        <browser:page attribute="setDescription" name="tinymce-setDescription" />
+    </browser:pages>
+
+    <browser:pages
+        for="*"
+        class=".browser.TinyMCEBrowserView"
+        permission="cmf.AddPortalContent">
+        <browser:page attribute="upload" name="tinymce-upload" />
+    </browser:pages>
+
+    <browser:resourceDirectory
+        name="tinymce.images"
+        directory="images"
+        />
+
+    <browser:resourceDirectory
+        name="tinymce.kss"
+        directory="kss"
+        />
+
+    <browser:resourceDirectory
+        name="tinymce.stylesheets"
+        directory="stylesheets"
+        />
+
+    <browser:view
+        name="content_anchors"
+        for="Products.Archetypes.interfaces.IBaseObject"
+        class=".atanchors.ATAnchorView"
+        permission="zope2.View"
+        />
+
+</configure>

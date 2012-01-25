@@ -1,0 +1,13 @@
+# Python Compiled files #
+######################
+*.pyc
+.project
+.pydevproject
+.svn/
+.settings/org.eclipse.core.resources.prefs
+*.egg/*
+*~
+
+# OS generated files #
+######################
+.DS_Store*
