@@ -1,2 +1,0 @@
-# BBB
-from mimetypes import *
