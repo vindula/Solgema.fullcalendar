@@ -151,7 +151,7 @@ function readCookie(name) {
             }
           });
         });
-        jq("#contextualContentMenu a[href*='delete_confirmation']").click( function(event) {
+        /*jq("#contextualContentMenu a[href*='delete_confirmation']").click( function(event) {
           event.preventDefault();
           jq(closeContextualContentMenu);
           if (window.confirm("Voulez-vous supprimer cet événement ?")) {
@@ -247,7 +247,7 @@ function readCookie(name) {
             }
           });
           jq('#kss-spinner').hide();
-        });
+        });*/
         for(var i=0;i < extraContentMenuActions.length;i++) {
           var menuname = extraContentMenuActions[i];
           jq("#contextualContentMenu a[href*='"+extraContentMenuActions[i]+"']").click( function(event) {
@@ -352,7 +352,7 @@ function readCookie(name) {
       allDayText: SolgemaFullcalendarVars.allDayText,
       weekMode: "liquid",
       timeFormat: SolgemaFullcalendarVars.axisFormat,
-      eventDrop: function(event, dayDelta, minuteDelta, allDay) {
+      /*eventDrop: function(event, dayDelta, minuteDelta, allDay) {
         jq('#kss-spinner').show();
         data = {event: event.id, dayDelta: dayDelta, minuteDelta: minuteDelta, allDay: allDay};
         jq.ajax({
@@ -379,7 +379,7 @@ function readCookie(name) {
             jq(revertFunc);
           }
         });
-      },
+      },*/
       loading: function(bool) {
         if (bool) {
           jq('#kss-spinner').show();
@@ -390,7 +390,7 @@ function readCookie(name) {
       selectable: true,
       selectHelper: true,
       select: function(start, end, allDay, event, view) {
-        SolgemaFullcalendar.openAddMenu(start, end, allDay, event);
+        //SolgemaFullcalendar.openAddMenu(start, end, allDay, event);
       },
       eventAfterRender: function(fcevent, element, view) {
         jq(element).click(function(event) {
