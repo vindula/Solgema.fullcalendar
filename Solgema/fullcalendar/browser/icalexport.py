@@ -24,6 +24,7 @@ class ICalExportButton(ViewletBase):
                           default=u"Download this calendar in iCal format"),
                         context=self.request)
         title = translate(_(u"iCal export"), context=self.request)
+        title_print = 'Imprimir as pr&oacute;ximas reservas.'
         url = self.context.absolute_url()
         portal_url = getToolByName(self.context, 'portal_url')()
         return """
@@ -34,7 +35,19 @@ class ICalExportButton(ViewletBase):
                     <img width="16" height="16" title="%(title)s" alt="%(title)s"
                          src="%(portal_url)s/icon_export_ical.png">
                 <span>%(title)s</span></a>
-               """ % {'msg': msg, 'title': title,
+                
+                <a onclick="window.open('%(url)s/print_reservations', 'Imprimir', 'STATUS=NO, TOOLBAR=NO, LOCATION=NO, DIRECTORIES=NO, RESISABLE=YES, SCROLLBARS=YES, TOP=50, LEFT=50, WIDTH=700, HEIGHT=600');"
+                   id="sfc-ical-export"
+                   class="visualNoPrint"
+                   title="%(title_print)s"
+                   style="margin-right: 10px; cursor: pointer;">
+                    <img width="16" height="16" title="%(title_print)s" alt="%(title_print)s"
+                         src="%(portal_url)s/print_icon.png">
+                    <span>Imprimir</span>
+                <a>
+                
+                
+               """ % {'msg': msg, 'title': title,'title_print': title_print,
                       'url': url, 'portal_url': portal_url}
 
 
@@ -89,4 +102,3 @@ class ICalExport(BrowserView):
             return str(data)
 
     __call__ = render
-
