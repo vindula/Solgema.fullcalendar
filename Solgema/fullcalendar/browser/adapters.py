@@ -20,6 +20,8 @@ try:
 except ImportError:
     HAS_RECCURENCE_SUPPORT = False
 
+from datetime import timedelta
+from copy import copy
 
 class SolgemaFullcalendarCatalogSearch(object):
     implements(interfaces.ISolgemaFullcalendarCatalogSearch)
@@ -80,7 +82,7 @@ class SolgemaFullcalendarTopicEventDict(object):
             return ''
         return ' '.join(classes)
 
-    def dictFromBrain(self, brain, editableEvents=[]):
+    def dictFromBrain(self, brain, editableEvents=[],data_inicio=None,data_fim=None):
 
         if brain.UID in editableEvents:
             editable = True
@@ -101,10 +103,66 @@ class SolgemaFullcalendarTopicEventDict(object):
         typeClass = ' type-'+brain.portal_type
         colorIndex = getColorIndex(self.context, self.request, brain=brain)
         extraClass = self.getBrainExtraClass(brain)
+        
         if HAS_RECCURENCE_SUPPORT:
             occurences = IRecurrenceSupport(brain.getObject()).occurences()
         else:
             occurences = [(brain.start.rfc822(), brain.end.rfc822())]
+        
+        obj = brain.getObject()
+        
+        if obj.getRecurrent() and data_inicio and data_fim:
+            
+            #Data Maior
+            data_inicio = data_inicio.get('query').asdatetime()
+            #Data Menor
+            data_fim = data_fim.get('query').asdatetime()    
+            
+            frequencia = obj.getFrequency()
+            data_reserva = obj.start_date
+            stop_recurrent = obj.end_dateRecurrent
+            if stop_recurrent:
+                stop_recurrent = stop_recurrent.asdatetime() + timedelta(days=1)
+            # occurences = []
+
+            def append_occurences(occurences, data_reserva):
+                occurences.append((data_reserva.isoformat(),data_reserva.isoformat()))
+                return occurences
+
+            if frequencia == 'semanal':
+
+                while data_reserva < data_inicio:
+                    data_reserva = data_reserva + timedelta(days=7)
+                    
+                    if not stop_recurrent:
+                        occurences = append_occurences(occurences, data_reserva)
+
+                    elif data_reserva < stop_recurrent:
+                        occurences = append_occurences(occurences, data_reserva)
+
+            elif frequencia == 'quinzenal': 
+
+                while data_reserva < data_inicio:
+
+                    data_reserva = data_reserva + timedelta(days=14)
+                    if not stop_recurrent:
+                        occurences = append_occurences(occurences, data_reserva)
+
+                    elif data_reserva < stop_recurrent:
+                        occurences = append_occurences(occurences, data_reserva)   
+
+            elif frequencia == 'mensal':
+                
+                while data_reserva < data_inicio:
+
+                    data_reserva = data_reserva + timedelta(days=30)
+                    if not stop_recurrent:
+                        occurences = append_occurences(occurences, data_reserva)
+
+                    elif data_reserva < stop_recurrent:
+                        occurences = append_occurences(occurences, data_reserva)   
+            
+
         events = []
         for occurence_start, occurence_end in occurences:
             events.append({
@@ -119,7 +177,7 @@ class SolgemaFullcalendarTopicEventDict(object):
                 "className": "contextualContentMenuEnabled state-" + str(brain.review_state) + (editable and " editable" or "")+copycut+typeClass+colorIndex+extraClass})
         return events
 
-    def dictFromObject(self, item):
+    def dictFromObject(self, item,):
         eventPhysicalPath = '/'.join(item.getPhysicalPath())
         wft = getToolByName(self.context, 'portal_workflow')
         state = wft.getInfoFor(self.context, 'review_state')
@@ -143,6 +201,7 @@ class SolgemaFullcalendarTopicEventDict(object):
         typeClass = ' type-' + item.portal_type
         colorIndex = getColorIndex(self.context, self.request, eventPhysicalPath)
         extraClass = self.getObjectExtraClass(item)
+
         if HAS_RECCURENCE_SUPPORT:
             occurences = IRecurrenceSupport(item).occurences()
         else:
@@ -171,9 +230,12 @@ class SolgemaFullcalendarTopicEventDict(object):
                                     interfaces.ISolgemaFullcalendarEditableFilter)
         editableEvents = eventsFilter.filterEvents(args)
 
+        data_inicio = args['start']
+        data_fim = args['end']
+
         for item in itemsList:
             if hasattr(item, '_unrestrictedGetObject'):
-                li.extend(self.dictFromBrain(item, editableEvents=editableEvents))
+                li.extend(self.dictFromBrain(item, editableEvents=editableEvents,data_inicio=data_inicio,data_fim=data_fim))
             else:
                 li.extend(self.dictFromObject(item))
 
@@ -229,7 +291,6 @@ class SolgemaFullcalendarEventDict(object):
                 "editable": editable,
                 "allDay": allday,
                 "className": "contextualContentMenuEnabled state-" + str(state) + (editable and " editable" or "")+copycut+typeClass+colorIndex+extraClass}
-
 
 
 class ColorIndexGetter(object):
@@ -299,7 +360,6 @@ class TopicEventSource(object):
                             if not getattr(a, filt['name'])
                             or len([b for b in self.convertAsList(getattr(a, filt['name']))
                                     if b in filt['values']])>0 ]
-
         return brains
 
     def _getCriteriaArgs(self):
@@ -356,9 +416,26 @@ class TopicEventSource(object):
                 del args['review_state']
 
         brains = self._getBrains(args, filters)
+
+        #Busca de eventos recorentes
+        r_args = copy(args)
+        r_args['getRecurrent'] = True
+        del r_args['start']
+        del r_args['end']
+
+        brains += self._getBrains(r_args, filters)
+        L_brains = []
+        L_tmp_UID = []
+
+        for i in brains:
+            if not i.UID in L_tmp_UID:
+                L_tmp_UID.append(i.UID)
+                L_brains.append(i)
+
         topicEventsDict = getMultiAdapter((context, self.request),
                                           interfaces.ISolgemaFullcalendarTopicEventDict)
-        result = topicEventsDict.createDict(brains, args)
+        
+        result = topicEventsDict.createDict(L_brains, args)
         return result
 
     def getICal(self):
