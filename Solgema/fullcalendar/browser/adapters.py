@@ -20,6 +20,7 @@ try:
 except ImportError:
     HAS_RECCURENCE_SUPPORT = False
 
+from dateutil.relativedelta import relativedelta
 from datetime import timedelta
 from copy import copy
 
@@ -155,7 +156,7 @@ class SolgemaFullcalendarTopicEventDict(object):
                 
                 while data_reserva < data_inicio:
 
-                    data_reserva = data_reserva + timedelta(days=30)
+                    data_reserva = data_reserva + relativedelta(months = +1)
                     if not stop_recurrent:
                         occurences = append_occurences(occurences, data_reserva)
 
