@@ -112,57 +112,58 @@ class SolgemaFullcalendarTopicEventDict(object):
         
         obj = brain.getObject()
         
-        if obj.getRecurrent() and data_inicio and data_fim:
+        if hasattr(obj, 'getRecurrent'):
+            if obj.getRecurrent() and data_inicio and data_fim:
             
-            #Data Maior
-            data_inicio = data_inicio.get('query').asdatetime()
-            #Data Menor
-            data_fim = data_fim.get('query').asdatetime()    
-            
-            frequencia = obj.getFrequency()
-            data_reserva = obj.start_date
-            stop_recurrent = obj.end_dateRecurrent
-            if stop_recurrent:
-                stop_recurrent = stop_recurrent.asdatetime() + timedelta(days=1)
-            # occurences = []
-
-            def append_occurences(occurences, data_reserva):
-                occurences.append((data_reserva.isoformat(),data_reserva.isoformat()))
-                return occurences
-
-            if frequencia == 'semanal':
-
-                while data_reserva < data_inicio:
-                    data_reserva = data_reserva + timedelta(days=7)
-                    
-                    if not stop_recurrent:
-                        occurences = append_occurences(occurences, data_reserva)
-
-                    elif data_reserva < stop_recurrent:
-                        occurences = append_occurences(occurences, data_reserva)
-
-            elif frequencia == 'quinzenal': 
-
-                while data_reserva < data_inicio:
-
-                    data_reserva = data_reserva + timedelta(days=14)
-                    if not stop_recurrent:
-                        occurences = append_occurences(occurences, data_reserva)
-
-                    elif data_reserva < stop_recurrent:
-                        occurences = append_occurences(occurences, data_reserva)   
-
-            elif frequencia == 'mensal':
+                #Data Maior
+                data_inicio = data_inicio.get('query').asdatetime()
+                #Data Menor
+                data_fim = data_fim.get('query').asdatetime()    
                 
-                while data_reserva < data_inicio:
+                frequencia = obj.getFrequency()
+                data_reserva = obj.start_date
+                stop_recurrent = obj.end_dateRecurrent
+                if stop_recurrent:
+                    stop_recurrent = stop_recurrent.asdatetime() + timedelta(days=1)
+                # occurences = []
 
-                    data_reserva = data_reserva + relativedelta(months = +1)
-                    if not stop_recurrent:
-                        occurences = append_occurences(occurences, data_reserva)
+                def append_occurences(occurences, data_reserva):
+                    occurences.append((data_reserva.isoformat(),data_reserva.isoformat()))
+                    return occurences
 
-                    elif data_reserva < stop_recurrent:
-                        occurences = append_occurences(occurences, data_reserva)   
-            
+                if frequencia == 'semanal':
+
+                    while data_reserva < data_inicio:
+                        data_reserva = data_reserva + timedelta(days=7)
+                        
+                        if not stop_recurrent:
+                            occurences = append_occurences(occurences, data_reserva)
+
+                        elif data_reserva < stop_recurrent:
+                            occurences = append_occurences(occurences, data_reserva)
+
+                elif frequencia == 'quinzenal': 
+
+                    while data_reserva < data_inicio:
+
+                        data_reserva = data_reserva + timedelta(days=14)
+                        if not stop_recurrent:
+                            occurences = append_occurences(occurences, data_reserva)
+
+                        elif data_reserva < stop_recurrent:
+                            occurences = append_occurences(occurences, data_reserva)   
+
+                elif frequencia == 'mensal':
+                    
+                    while data_reserva < data_inicio:
+
+                        data_reserva = data_reserva + relativedelta(months = +1)
+                        if not stop_recurrent:
+                            occurences = append_occurences(occurences, data_reserva)
+
+                        elif data_reserva < stop_recurrent:
+                            occurences = append_occurences(occurences, data_reserva)   
+                
 
         events = []
         for occurence_start, occurence_end in occurences:
