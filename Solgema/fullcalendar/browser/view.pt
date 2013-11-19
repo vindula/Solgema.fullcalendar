@@ -4,7 +4,7 @@
       i18n:domain="Solgema.fullcalendar">
 <head>
   <metal:slot fill-slot="style_slot">
-        <style media="all"  type="text/css" tal:content="structure python:path('here/solgemafullcalendar_colors.css')">
+        <style media="all" id="new-theme"  type="text/css" tal:content="structure python:path('here/solgemafullcalendar_colors.css')">
         </style>
   </metal:slot>
     <metal:slot fill-slot="javascript_head_slot" tal:omit-tag="">
