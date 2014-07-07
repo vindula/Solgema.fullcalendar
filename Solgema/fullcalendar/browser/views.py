@@ -302,7 +302,7 @@ class SolgemaFullcalendarJS(BrowserView):
         return _('editEvent', 'Edit Event')
 
     def getCustomTitleFormat(self):
-        if self.portal_language in ['fr']:
+        if self.portal_language in ['fr','pt']:
             return '{month: "MMMM yyyy", week: "d[ MMMM][ yyyy]{ \'-\' d MMMM yyyy}", day: \'dddd d MMMM yyyy\'}'
         elif self.portal_language in ['de']:
             return '{month: \'MMMM yyyy\', week: "d[ yyyy].[ MMMM]{ \'- \'d. MMMM yyyy}", day: \'dddd, d. MMMM yyyy\'}'
@@ -310,7 +310,7 @@ class SolgemaFullcalendarJS(BrowserView):
             return '{month: \'MMMM yyyy\', week: "MMM d[ yyyy]{ \'-\'[ MMM] d yyyy}", day: \'dddd, MMM d, yyyy\'}'
 
     def getHourFormat(self):
-        if self.portal_language in ['fr', 'de', 'it']:
+        if self.portal_language in ['fr', 'de', 'it','pt_br']:
             return 'HH:mm'
         else:
             return 'h(:mm)tt'
@@ -318,7 +318,7 @@ class SolgemaFullcalendarJS(BrowserView):
     def columnFormat(self):
         if self.portal_language in ['de']:
             return "{month: 'ddd', week: 'ddd d. MMM', day: 'dddd d. MMM'}"
-        elif self.portal_language in ['fr']:
+        elif self.portal_language in ['fr','pt']:
             return "{month: 'dddd', week: 'ddd d/MM', day: 'dddd d/MM'}"
         else:
             return "{month: 'ddd', week: 'ddd M/d', day: 'dddd M/d'}"
