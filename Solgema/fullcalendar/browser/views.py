@@ -42,7 +42,12 @@ class ToolsEventoView(BrowserView):
             end = self.request.form.get('end')
             end = end.replace('/SFLight_eventreserve_view','')
             format = '%Y-%m-%dT%H:%M:%S'
-            return datetime.datetime.strptime(end,format)
+            try:
+                return parse(end)
+            except:
+                return datetime.datetime.strptime(end,format)
+            else:
+                return self.content.end()
 
         return self.content.end()
 
