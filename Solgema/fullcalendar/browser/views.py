@@ -20,6 +20,31 @@ from Solgema.fullcalendar.config import _
 from Solgema.fullcalendar import interfaces
 from Solgema.fullcalendar import log
 
+from dateutil.parser import parse
+
+
+
+class ToolsEventoView(BrowserView):
+
+    def render(self):
+        return 'ok'
+
+    def start_date(self):
+        if 'start' in self.request.form.keys():
+            start = self.request.form.get('start')
+            return parse(start)
+
+        return self.content.start()
+
+
+    def end_date(self):
+        if 'end' in self.request.form.keys():
+            end = self.request.form.get('end')
+            end = end.replace('/SFLight_eventreserve_view','')
+            format = '%Y-%m-%dT%H:%M:%S'
+            return datetime.datetime.strptime(end,format)
+
+        return self.content.end()
 
 DTMF = MessageFactory('collective.z3cform.datetimewidget')
 

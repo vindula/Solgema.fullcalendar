@@ -179,7 +179,7 @@ class SolgemaFullcalendarTopicEventDict(object):
                 "description": brain.Description,
                 "start": HAS_RECCURENCE_SUPPORT and occurence_start.isoformat() or occurence_start,
                 "end": HAS_RECCURENCE_SUPPORT and occurence_end.isoformat() or occurence_end,
-                "url": brain.getURL(),
+                "url": '%s/view_event_calendar?start=%s&end=%s' %(brain.getURL(),occurence_start,occurence_end),
                 "editable": editable,
                 "allDay": allday,
                 "className": "contextualContentMenuEnabled state-" + str(brain.review_state) + (editable and " editable" or "")+copycut+typeClass+colorIndex+extraClass})

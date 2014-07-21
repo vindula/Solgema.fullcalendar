@@ -7,6 +7,15 @@
 
    <include package="Products.CMFCore" file="configure.zcml" />
 
+  <browser:page
+      for="*"
+      name="tools_evento_view"
+      class=".views.ToolsEventoView"
+      allowed_interface="Solgema.fullcalendar.interfaces.IToolsEventoView"
+      permission="zope.Public"
+      />
+
+
   <!-- THE CALENDAR VIEW -->
   <browser:page
       for="Solgema.fullcalendar.interfaces.ISolgemaFullcalendarMarker"
