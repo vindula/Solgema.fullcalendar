@@ -17,14 +17,22 @@
 
         <div class="eventDetails vcard">
             <h2 i18n:translate="summary_event_details">Event details</h2> 
-                        <div class="eventDetail">
+                    <div class="eventDetail">
                         <h3 i18n:translate="event_when">When</h3>
                         <div >
-                          <span tal:replace="python:toLocalizedTime(view_eventtools.start_date())">Start Date</span> á
-                          <span tal:replace="python:toLocalizedTime(view_eventtools.end_date())">End Date</span>
-
+                            <span metal:define-slot="inside" class="explain">
+                                <span tal:replace="python:toLocalizedTime(view_eventtools.start_date())">Start Date</span>
+                                <tal:word i18n:translate="event_when_differentday_optional_word_between_date_and_time" />
+                                <span tal:replace="python:toLocalizedTime(view_eventtools.start_date(), time_only=1)">Start Time</span>
+                            </span>
+                            <br />
+                            <span metal:define-slot="inside" class="explain">
+                                <span tal:replace="python:toLocalizedTime(view_eventtools.end_date())">End Date</span>
+                                <tal:word i18n:translate="event_when_differentday_optional_word_between_date_and_time" />
+                                <span tal:replace="python:toLocalizedTime(view_eventtools.end_date(), time_only=1)">End Time</span>
+                            </span>
                         </div>
-                        </div>
+                    </div>
                   
                     <tal:where tal:condition="context/location">
                     <div class="eventDetail">
