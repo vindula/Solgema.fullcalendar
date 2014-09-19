@@ -20,6 +20,36 @@ from Solgema.fullcalendar.config import _
 from Solgema.fullcalendar import interfaces
 from Solgema.fullcalendar import log
 
+from dateutil.parser import parse
+
+
+
+class ToolsEventoView(BrowserView):
+
+    def render(self):
+        return 'ok'
+
+    def start_date(self):
+        if 'start' in self.request.form.keys():
+            start = self.request.form.get('start')
+            return parse(start)
+
+        return self.content.start()
+
+
+    def end_date(self):
+        if 'end' in self.request.form.keys():
+            end = self.request.form.get('end')
+            end = end.replace('/SFLight_eventreserve_view','')
+            format = '%Y-%m-%dT%H:%M:%S'
+            try:
+                return parse(end)
+            except:
+                return datetime.datetime.strptime(end,format)
+            else:
+                return self.content.end()
+
+        return self.content.end()
 
 DTMF = MessageFactory('collective.z3cform.datetimewidget')
 
@@ -302,7 +332,7 @@ class SolgemaFullcalendarJS(BrowserView):
         return _('editEvent', 'Edit Event')
 
     def getCustomTitleFormat(self):
-        if self.portal_language in ['fr']:
+        if self.portal_language in ['fr','pt']:
             return '{month: "MMMM yyyy", week: "d[ MMMM][ yyyy]{ \'-\' d MMMM yyyy}", day: \'dddd d MMMM yyyy\'}'
         elif self.portal_language in ['de']:
             return '{month: \'MMMM yyyy\', week: "d[ yyyy].[ MMMM]{ \'- \'d. MMMM yyyy}", day: \'dddd, d. MMMM yyyy\'}'
@@ -312,7 +342,7 @@ class SolgemaFullcalendarJS(BrowserView):
             return '{month: \'MMMM yyyy\', week: "MMM d[ yyyy]{ \'-\'[ MMM] d yyyy}", day: \'dddd, MMM d, yyyy\'}'
 
     def getHourFormat(self):
-        if self.portal_language in ['fr', 'de', 'it']:
+        if self.portal_language in ['fr', 'de', 'it','pt_br']:
             return 'HH:mm'
         else:
             return 'h(:mm)tt'
@@ -320,7 +350,7 @@ class SolgemaFullcalendarJS(BrowserView):
     def columnFormat(self):
         if self.portal_language in ['de']:
             return "{month: 'ddd', week: 'ddd d. MMM', day: 'dddd d. MMM'}"
-        elif self.portal_language in ['fr']:
+        elif self.portal_language in ['fr','pt']:
             return "{month: 'dddd', week: 'ddd d/MM', day: 'dddd d/MM'}"
         elif self.portal_language in ['pt']:
             return "{month: 'ddd', week: 'ddd d/M', day: 'dddd d/MM'}"

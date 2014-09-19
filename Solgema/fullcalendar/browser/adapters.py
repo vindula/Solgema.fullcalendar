@@ -21,7 +21,7 @@ except ImportError:
     HAS_RECCURENCE_SUPPORT = False
 
 from dateutil.relativedelta import relativedelta
-from datetime import timedelta
+from datetime import timedelta, datetime
 from copy import copy
 
 class SolgemaFullcalendarCatalogSearch(object):
@@ -122,47 +122,53 @@ class SolgemaFullcalendarTopicEventDict(object):
                 
                 frequencia = obj.getFrequency()
                 data_reserva = obj.start_date
+
+                try:
+                    end_time_reserva = obj.end_date.time()
+                except:
+                    end_time_reserva = obj.end_date.asdatetime().time()
+
                 stop_recurrent = obj.end_dateRecurrent
                 if stop_recurrent:
                     stop_recurrent = stop_recurrent.asdatetime() + timedelta(days=1)
                 # occurences = []
 
-                def append_occurences(occurences, data_reserva):
-                    occurences.append((data_reserva.isoformat(),data_reserva.isoformat()))
+                def append_occurences(occurences, data_reserva, end_data_reserva):
+                    occurences.append((data_reserva.isoformat(),end_data_reserva.isoformat()))
                     return occurences
 
                 if frequencia == 'semanal':
-
                     while data_reserva < data_inicio:
                         data_reserva = data_reserva + timedelta(days=7)
+                        end_data_reserva = datetime.combine(data_reserva, end_time_reserva)
                         
                         if not stop_recurrent:
-                            occurences = append_occurences(occurences, data_reserva)
+                            occurences = append_occurences(occurences, data_reserva,end_data_reserva)
 
                         elif data_reserva < stop_recurrent:
-                            occurences = append_occurences(occurences, data_reserva)
+                            occurences = append_occurences(occurences, data_reserva,end_data_reserva)
 
                 elif frequencia == 'quinzenal': 
-
                     while data_reserva < data_inicio:
-
                         data_reserva = data_reserva + timedelta(days=14)
+                        end_data_reserva = datetime.combine(data_reserva, end_time_reserva)                        
+
                         if not stop_recurrent:
-                            occurences = append_occurences(occurences, data_reserva)
+                            occurences = append_occurences(occurences, data_reserva,end_data_reserva)
 
                         elif data_reserva < stop_recurrent:
-                            occurences = append_occurences(occurences, data_reserva)   
+                            occurences = append_occurences(occurences, data_reserva,end_data_reserva)   
 
                 elif frequencia == 'mensal':
-                    
                     while data_reserva < data_inicio:
-
                         data_reserva = data_reserva + relativedelta(months = +1)
+                        end_data_reserva = datetime.combine(data_reserva, end_time_reserva)
+                        
                         if not stop_recurrent:
-                            occurences = append_occurences(occurences, data_reserva)
+                            occurences = append_occurences(occurences, data_reserva,end_data_reserva)
 
                         elif data_reserva < stop_recurrent:
-                            occurences = append_occurences(occurences, data_reserva)   
+                            occurences = append_occurences(occurences, data_reserva,end_data_reserva)   
                 
 
         events = []
@@ -173,7 +179,7 @@ class SolgemaFullcalendarTopicEventDict(object):
                 "description": brain.Description,
                 "start": HAS_RECCURENCE_SUPPORT and occurence_start.isoformat() or occurence_start,
                 "end": HAS_RECCURENCE_SUPPORT and occurence_end.isoformat() or occurence_end,
-                "url": brain.getURL(),
+                "url": '%s/view_event_calendar?start=%s&end=%s' %(brain.getURL(),occurence_start,occurence_end),
                 "editable": editable,
                 "allDay": allday,
                 "className": "contextualContentMenuEnabled state-" + str(brain.review_state) + (editable and " editable" or "")+copycut+typeClass+colorIndex+extraClass})

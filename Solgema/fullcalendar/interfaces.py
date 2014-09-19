@@ -300,3 +300,13 @@ class IEventSource(Interface):
     def getIcal(self):
         """Ical export of events
         """
+
+
+
+class IToolsEventoView(Interface):
+
+    def start_date(self):
+        ''' OK '''
+
+    def end_date(self):
+        '''OK '''
