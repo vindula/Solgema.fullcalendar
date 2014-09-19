@@ -306,6 +306,8 @@ class SolgemaFullcalendarJS(BrowserView):
             return '{month: "MMMM yyyy", week: "d[ MMMM][ yyyy]{ \'-\' d MMMM yyyy}", day: \'dddd d MMMM yyyy\'}'
         elif self.portal_language in ['de']:
             return '{month: \'MMMM yyyy\', week: "d[ yyyy].[ MMMM]{ \'- \'d. MMMM yyyy}", day: \'dddd, d. MMMM yyyy\'}'
+        elif self.portal_language in ['pt']:
+            return '{month: \'MMMM yyyy\', week: "d[ MMMM][ yyyy]{ \'- \'d MMMM yyyy}", day: \'dddd, d MMMM yyyy\'}'
         else:
             return '{month: \'MMMM yyyy\', week: "MMM d[ yyyy]{ \'-\'[ MMM] d yyyy}", day: \'dddd, MMM d, yyyy\'}'
 
@@ -320,6 +322,8 @@ class SolgemaFullcalendarJS(BrowserView):
             return "{month: 'ddd', week: 'ddd d. MMM', day: 'dddd d. MMM'}"
         elif self.portal_language in ['fr']:
             return "{month: 'dddd', week: 'ddd d/MM', day: 'dddd d/MM'}"
+        elif self.portal_language in ['pt']:
+            return "{month: 'ddd', week: 'ddd d/M', day: 'dddd d/MM'}"
         else:
             return "{month: 'ddd', week: 'ddd M/d', day: 'dddd M/d'}"
 
